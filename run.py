@@ -21,7 +21,10 @@ import pytesseract
 from collections import defaultdict
 
 # ВАШ ПУТЬ К TESSERACT
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\shohjahon.saidov\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+import shutil
+tesseract_path = shutil.which("tesseract")
+if tesseract_path:
+    pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -177,11 +180,14 @@ def get_stats_inline_keyboard():
 
 # ============ БОТ ============
 
-class NoSSLSession(AiohttpSession):
+class FlexibleSession(AiohttpSession):
     async def create_session(self):
-        connector = aiohttp.TCPConnector(ssl=False)
-        self._session = aiohttp.ClientSession(connector=connector)
-        return self._session
+        disable_ssl = os.getenv("DISABLE_SSL_VERIFY", "false").lower() == "true"
+        if disable_ssl:
+            connector = aiohttp.TCPConnector(ssl=False)
+            self._session = aiohttp.ClientSession(connector=connector)
+            return self._session
+        return await super().create_session()
 
 dp = Dispatcher()
 

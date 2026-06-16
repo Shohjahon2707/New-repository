@@ -387,7 +387,7 @@ async def main():
         print(f"❌ Tesseract не найден! {e}")
         return
 
-    session = NoSSLSession()
+    session = FlexibleSession()
     bot = Bot(token=BOT_TOKEN, session=session)
 
     print("✅ Бот запущен! Работает только в группах.")

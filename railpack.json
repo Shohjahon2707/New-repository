@@ -1,6 +1,7 @@
 {
   "$schema": "https://schema.railpack.com",
   "deploy": {
+    "startCommand": "python run.py",
     "aptPackages": ["tesseract-ocr"]
   }
 }
